@@ -1,14 +1,17 @@
 pipeline {
   agent any
   environment {
-   ANSIBLE_PRIVATE_KEY=credentials('mariadb-private-key') 
+   ANSIBLE_SSH_USER = 'root' // 这里是你的 SSH 用户名
   }
   stages {
     stage('Hello') {
       steps {
         sh 'ansible-galaxy collection install -r requirements.yml'
-        sh 'ansible-playbook -i inventory/mariadb.hosts --private-key=$ANSIBLE_PRIVATE_KEY playbooks/mariadb.yml'
-      }
+        // 使用 withCredentials 将 SSH 密钥和用户名注入到环境变量中
+        withCredentials([sshUserPrivateKey(credentialsId: 'mariadb-ssh-key', keyFileVariable: 'ANSIBLE_PRIVATE_KEY', usernameVariable: 'ANSIBLE_USER')]) {
+          // 使用 ansible-playbook 时通过环境变量提供私钥文件和 SSH 用户
+          sh 'ansible-playbook -i inventory/mariadb.hosts --private-key=$ANSIBLE_PRIVATE_KEY -u $ANSIBLE_USER playbooks/mariadb.yml'
+        }
     }
   }
 }
