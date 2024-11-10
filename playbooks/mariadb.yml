@@ -4,15 +4,24 @@
   tasks:
     - name: Add MariaDB APT repository
       apt_repository:
-        repo: 'deb [arch=amd64,arm64,ppc64el] http://mariadb.mirror.globo.tech/repo/10.6/ubuntu $(lsb_release -cs) main'
+        repo: 'deb [arch=amd64,arm64,ppc64el] http://mariadb.mirror.globo.tech/repo/10.6/ubuntu {{ ansible_distribution_release }} main'
         state: present
         filename: 'mariadb'
+
+    - name: Add MariaDB GPG key
+      apt_key:
+        url: 'https://mariadb.org/mariadb_release_signing_key.asc'
+        state: present
+
+    - name: Update APT cache
+      apt:
+        update_cache: yes
+      when: ansible_facts['pkg_mgr'] == 'apt'
 
     - name: Install MariaDB server
       apt:
         name: mariadb-server
         state: latest
-        update_cache: yes
 
     - name: Start MariaDB service
       systemd:
