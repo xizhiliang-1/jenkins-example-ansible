@@ -1,3 +1,6 @@
-collections:
-- name: community.general
-- name: ansible.posix
+# requirements.yml
+---
+roles:
+  - name: geerlingguy.nginx  # Nginx 的常用 Ansible 角色
+    src: geerlingguy.nginx   # 从 ansible-galaxy 下载
+    version: 3.1.0           # 指定角色版本（可选）
