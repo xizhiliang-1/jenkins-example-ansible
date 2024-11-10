@@ -12,6 +12,7 @@ pipeline {
           // 使用 ansible-playbook 时通过环境变量提供私钥文件和 SSH 用户
           sh 'ansible-playbook -i inventory/mariadb.hosts --private-key=$ANSIBLE_PRIVATE_KEY -u $ANSIBLE_USER playbooks/mariadb.yml'
         }
+      }
     }
   }
 }
