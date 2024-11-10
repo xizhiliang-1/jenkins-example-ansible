@@ -2,24 +2,25 @@
   hosts: mariadbs
   become: yes
   tasks:
-    - name: MariaDB yum repository
-      yum_repository:
-        name: MariaDB
-        description: MariaDB
-        baseurl: http://yum.mariadb.org/10.6.2/centos$releasever-amd64
-        enabled: yes
-        gpgcheck: yes
-        gpgkey: https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+    - name: Add MariaDB APT repository
+      apt_repository:
+        repo: 'deb [arch=amd64,arm64,ppc64el] http://mariadb.mirror.globo.tech/repo/10.6/ubuntu $(lsb_release -cs) main'
+        state: present
+        filename: 'mariadb'
+
     - name: Install MariaDB server
-      yum:
-        name:
-          - MariaDB-server
+      apt:
+        name: mariadb-server
         state: latest
-    - name: start MariaDB service
+        update_cache: yes
+
+    - name: Start MariaDB service
       systemd:
         name: mariadb
         state: started
-    - name: verify installation
+
+    - name: Verify installation
       ansible.builtin.command: mysql --version
       register: mysql_version
+
     - debug: var=mysql_version.stdout_lines
