@@ -1,8 +1,5 @@
 pipeline {
   agent any
-  environment {
-   ANSIBLE_SSH_USER = 'root' // 这里是你的 SSH 用户名
-  }
   stages {
     stage('Hello') {
       steps {
