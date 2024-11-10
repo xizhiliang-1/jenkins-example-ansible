@@ -1,0 +1,7 @@
+# install_nginx.yml
+---
+- name: Nginx Web Server Setup
+  hosts: web_servers  # 定义服务器组
+  become: yes         # 使用 sudo 权限
+  roles:
+    - geerlingguy.nginx  # 调用下载的角色
